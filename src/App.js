@@ -11,7 +11,8 @@ const $ = go.GraphObject.make;
 class App extends Component {
   
   state = {
-    myDiagram: {}
+    myDiagram: {},
+    currentDiagram: 'NewDiagram.json'
   }
 
   diagram={}
@@ -23,14 +24,14 @@ class App extends Component {
 
   saveFileHandler = () => {
     let text = JSON.stringify(this.state.myDiagram.model.nodeDataArray);
-    console.log(text);
+    
     let filename;
-    let person = prompt("Please enter your name", "NewDiagram.json");
+    let person = prompt("Please enter your name", this.state.currentDiagram);
 
     if (person != null) {
       filename = person;
     } else {
-      filename = "hello.json";
+      filename = "NewDiagram.json";
     }
 
     var element = document.createElement('a');
@@ -46,7 +47,7 @@ class App extends Component {
   }
 
   loadFileHandler = (event) => {
-
+    let newCurrentDiagram = event.target.files[0].name.replace(/ *\([^)]*\) */g, "");
     var reader = new FileReader();
     reader.onload = event => {
       const fileString = event.target.result;
@@ -57,7 +58,8 @@ class App extends Component {
       this.diagram = this.state.myDiagram;
       this.diagram.model = loadedModel;
       this.setState({
-        myDiagram: this.diagram
+        myDiagram: this.diagram,
+        currentDiagram: newCurrentDiagram
       })
     };
     reader.readAsText(event.target.files[0]);
